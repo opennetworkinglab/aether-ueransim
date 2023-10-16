@@ -2,7 +2,7 @@ ueransim:
   router:
     data_iface: data
     macvlan:
-      iface: gnbaccess
+      iface: ueransimaccess
       subnet_prefix: "172.20"
 
 core:
