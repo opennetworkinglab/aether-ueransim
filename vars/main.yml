@@ -1,86 +1,3 @@
-k8s:
-  rke2:
-    version: v1.23.4+rke2r1
-    config:
-      token: purdue-k8s-rke2
-      port: 9345
- 
-  kubectl:
-    version: v1.23.15
-
-  helm:
-    version: v3.10.3      
-
-core:
-  standalone: "true"
-  data_iface: ens18
-  values_file: "deps/5gc/roles/core/templates/sdcore-5g-values.yaml"
-  ran_subnet: "172.20.0.0/16"
-  helm:
-    chart_ref: aether/sd-core
-    chart_version: 0.12.6
-  upf:
-    ip_prefix: "192.168.252.0/24"
-    iface: "access"
-    helm:
-      chart_ref: aether/bess-upf
-    values_file: "deps/5gc/roles/upf/templates/upf-5g-values.yaml"
-  amf:
-    ip: "10.76.28.113"
-
-gnbsim:
-  docker:
-    container:
-      image: omecproject/5gc-gnbsim:main-PR_88-cc0d21b      
-      prefix: gnbsim
-      count: 1
-    network:
-      macvlan:
-        name: gnbnet
-
-  router:
-    data_iface: ens18
-    macvlan:
-      iface: gnbaccess
-      subnet_prefix: "172.20"
-
-  servers:
-    0:
-       - "deps/gnbsim/config/gnbsim-default.yaml"
-
-amp:
-  roc_models: "deps/amp/roles/roc-load/templates/roc-5g-models.json"
-  monitor_dashboard: "deps/amp/roles/monitor-load/templates/5g-monitoring"
-
-  aether_roc:
-    helm:
-      chart_ref: aether/aether-roc-umbrella
-      chart_version: 2.1.36
-
-  atomix:
-    helm:
-      chart_ref: atomix/atomix
-      chart_version: 1.1.2
-
-  onosproject:
-    helm:
-      chart_ref: onosproject/onos-operator
-      chart_version: 0.5.6
-
-  store:
-    lpp:
-      version: v0.0.24
-
-  monitor:
-    helm:
-      chart_ref: rancher/rancher-monitoring
-      chart_version: 101.0.0+up19.0.3
-
-  monitor-crd:
-    helm:
-      chart_ref: rancher/rancher-monitoring-crd
-      chart_version: 101.0.0+up19.0.3
-
 ueransim:
   docker:
     container:
@@ -92,8 +9,23 @@ ueransim:
         name: ueransimnet
 
   router:
-    data_iface: ens18
+    data_iface: eth0
     macvlan:
       iface: ueransimaccess
       subnet_prefix: "172.20"
 
+  servers:
+    0:
+      - "config/ueransim_default.yaml"
+        #- "config/gnbsim-s1-p2.yaml"
+    # 1:
+    #   - "config/gnbsim-s2-p1.yaml"
+    #   - "config/gnbsim-s2-p2.yaml"
+
+core:
+  upf:
+    ip_prefix: "192.168.252.0/24"
+    iface: "access"
+  amf:
+    ip: "172.16.248.6"
+    

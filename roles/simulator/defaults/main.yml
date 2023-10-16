@@ -1,0 +1,12 @@
+ueransim:
+  docker:
+    network:
+      macvlan:
+        name: ueransimnet
+
+  servers:
+    0:
+      - "config/ueransim_default.yaml"
+core:
+  amf:
+    ip: "172.16.248.6"

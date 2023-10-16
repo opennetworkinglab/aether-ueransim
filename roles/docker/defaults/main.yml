@@ -1,0 +1,15 @@
+  
+ueransim:
+  docker:
+    container:
+      image: omecproject/5gc-ueransim:main-PR_88-cc0d21b
+      prefix: ueransim
+      count: 2
+    network:
+      macvlan:
+        name: gnbnet
+
+  router:
+    mcavlan:
+      iface: gnbaccess
+      subnet_prefix: "172.20"

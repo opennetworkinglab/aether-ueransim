@@ -46,10 +46,10 @@
   when: inventory_hostname in groups['ueransim_nodes']
   become: true
 
-- name: "copy 20-ueransim-access.network to {{ systemd_network_dir }}/20-ueransim.network"
+- name: "copy 20-ueransim-access.network to {{ systemd_network_dir }}/20-ueransim-access.network"
   template:
     src: roles/router/templates/20-ueransim-access.network
-    dest: "{{ systemd_network_dir }}/20-ueransim.network"
+    dest: "{{ systemd_network_dir }}/20-ueransim-access.network"
   vars:
     subnet_address: "{{ ueransim.router.macvlan.subnet_prefix }}.{{ lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname) }}.1/24"
   when: inventory_hostname in groups['ueransim_nodes']

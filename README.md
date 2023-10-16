@@ -1,10 +1,10 @@
 # ueransim
 
-The ueransim repository enables the building of a multi-container and multi-node cluster of ueransim using Docker. This allows you to run gNbsim simulations on multiple VMs, with the flexibility to run multiple containers on each VM.
+The ueransim repository enables the building of a multi-container and multi-node cluster of ueransim using Docker. This allows you to run ueransim simulations on multiple VMs, with the flexibility to run multiple containers on each VM.
 
 To download the ueransim repository, use the following command:
 ```
-git clone https://github.com/aligungr/UERANSIM
+git clone https://gitlab.com/onf-internship/ueransim.git
 ```
 
 ## Step-by-Step Installation
@@ -16,18 +16,18 @@ To install ueransim, follow these steps:
    - Set "macvlan_iface" to the name of the macvlan interface to be created.
    - Set "macvlan_network_name" to the name of the Docker network to be created.
    - Set "subnet_prefix" to the first two bytes of the subnet, which should correspond to the "custome_ran_subnet" of 5g-core or the machine's subnet.
-3. Start the gNbsim Docker containers using `make ueransim-docker-start`:
-   - Set the container "image" for gNbsim.
-   - Set "prefix" to the desired name for the gNbsim containers.
+3. Start the ueransim Docker containers using `make ueransim-docker-start`:
+   - Set the container "image" for ueransim.
+   - Set "prefix" to the desired name for the ueransim containers.
    - Set "count" to the number of containers to be instantiated on each VM.
 4. Start the simulation:
    - Set "amf.ip" to the IP address of the core machine.
    - Set "ueid_base" to the starting IMSI number.
      - Each container will have a different starting IMSI number.
-   - Set "ue_per_pod" to the number of UEs on each gNbsim container.
+   - Set "ue_per_pod" to the number of UEs on each ueransim container.
    - Set the "ueransims" array with a list of key-value pairs:
      - Each key represents the container number (numeric).
-     - The corresponding value `config_file` is the config template file for gNbsim.
+     - The corresponding value `config_file` is the config template file for ueransim.
    - Run `make ueransim-simulator-start`.
 5. Check the results:
    - Enter one of the Docker containers using `docker exec -it *prefix*-1 bash`.
