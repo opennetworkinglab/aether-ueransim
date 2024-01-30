@@ -1,5 +1,5 @@
 ---
 
 - name: start ueransim/simulator
-  include: roles/simulator/tasks/start.yml
+  import_tasks: roles/simulator/tasks/start.yml
   tags: start

@@ -1,9 +1,9 @@
 ---
 
 - name: install ueransim/router
-  include: roles/router/tasks/install.yml
+  import_tasks: roles/router/tasks/install.yml
   tags: install
 
 - name: uninstall ueransim/router
-  include: roles/router/tasks/uninstall.yml
+  import_tasks: roles/router/tasks/uninstall.yml
   tags: uninstall
