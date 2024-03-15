@@ -4,7 +4,7 @@ The ueransim repository enables the building of a multi-container and multi-node
 
 To download the ueransim repository, use the following command:
 ```
-git clone https://gitlab.com/onf-internship/ueransim.git
+git clone https://github.com/aligungr/UERANSIM
 ```
 
 ## Step-by-Step Installation
