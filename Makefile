@@ -46,6 +46,9 @@ ueransim-simulator-run:
 	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags start \
 		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
 
+#### Provision ueransim without docker ####
+ueransim-non-docker-install:
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/ueransim.yml 
 
 # run ueransim-docker-install before running setup
 ueransim-install: ueransim-docker-install ueransim-docker-router-install ueransim-docker-start

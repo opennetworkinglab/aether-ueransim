@@ -1,0 +1,13 @@
+---
+
+- name: deploy ueransim
+  hosts: ueransim_nodes
+  gather_facts: true
+  remote_user: root
+
+  tasks:
+    - name: clone the repo
+      command: git clone https://github.com/aligungr/UERANSIM
+    - name: start deployment
+      command: bash -lc "cd UERANSIM && make"
+
