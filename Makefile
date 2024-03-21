@@ -8,7 +8,7 @@ export HOSTS_INI_FILE ?= hosts.ini
 
 export EXTRA_VARS ?= ""
 
-#### Start Ansible docker ####
+#### Start Ansible ####
 
 ueransim-ansible:
 	export ANSIBLE_NAME=$(ANSIBLE_NAME); \
@@ -16,40 +16,20 @@ ueransim-ansible:
 
 #### a. Debugging ####
 ueransim-pingall:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/pingall.yml \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/pingall.yml 
 
-#### b. Provision docker ####
-ueransim-docker-install:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/docker.yml --tags install \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
-ueransim-docker-uninstall:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/docker.yml --tags uninstall \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
+#### b. Provision ueransim ####
+ueransim-install:
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags install \
+                --extra-vars "ROOT_DIR=$(ROOT_DIR)" -v
 
-ueransim-docker-router-install:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/router.yml --tags install \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
-ueransim-docker-router-uninstall:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/router.yml --tags uninstall \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
-
-ueransim-docker-start:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/docker.yml --tags start \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
-ueransim-docker-stop:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/docker.yml --tags stop \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
-
-#### c. Provision ueransim ####
+#### c. Start the simulator
 ueransim-simulator-run:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags start \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" --extra-vars $(EXTRA_VARS)
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags start  \
+		--extra-vars "ROOT_DIR=$(ROOT_DIR)" -v
 
-#### Provision ueransim without docker ####
-ueransim-non-docker-install:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/ueransim.yml 
+#### d. Remove ueransim ####
+ueransim-uninstall:
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags uninstall  \
+		--extra-vars "ROOT_DIR=$(ROOT_DIR)" -v
 
-# run ueransim-docker-install before running setup
-ueransim-install: ueransim-docker-install ueransim-docker-router-install ueransim-docker-start
-ueransim-uninstall:  ueransim-docker-stop ueransim-docker-router-uninstall ueransim-docker-uninstall

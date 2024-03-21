@@ -1,0 +1,9 @@
+---
+- name: force stop gNB
+  command: pkill -9 -f gnb 
+
+- name: force stop UE
+  command: pkill -9 -f ue 
+ 
+- name: remove ueransim
+  command: rm -rf {{ROOT_DIR}}/UERANSIM 
