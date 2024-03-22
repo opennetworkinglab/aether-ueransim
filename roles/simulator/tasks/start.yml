@@ -1,4 +1,17 @@
 ---
+
+- name: copy gnb config file to ueransim host
+  copy:
+    src: "{{ ROOT_DIR }}/config/custom-gnb.yaml"
+    dest: UERANSIM/config/custom-gnb.yaml
+  tags:
+    - ueransim
+- name: copy ue config file to ueransim host
+  copy:
+    src: "{{ ROOT_DIR }}/config/custom-ue.yaml"
+    dest: UERANSIM/config/custom-ue.yaml
+  tags:
+    - ueransim
 - name: Run gNB
   shell: nohup ./nr-gnb -c ../config/custom-gnb.yaml > /dev/null 2>&1 &
   async: 30

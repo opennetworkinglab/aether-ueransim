@@ -33,18 +33,4 @@
   tags:
     - install
 
-- name: copy gnb config file to ueransim host
-  copy:
-    src: "{{ ROOT_DIR }}/config/custom-gnb.yaml"
-    dest: UERANSIM/config/custom-gnb.yaml
-  tags:
-    - install
-
-- name: copy ue config file to ueransim host
-  copy:
-    src: "{{ ROOT_DIR }}/config/custom-ue.yaml"
-    dest: UERANSIM/config/custom-ue.yaml
-  tags:
-    - install
-
 
