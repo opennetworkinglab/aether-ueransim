@@ -3,9 +3,77 @@
 - name: provision simulator
   hosts: ueransim_nodes
   gather_facts: true
-    
-  vars_files:
-    - "vars/main.yml"
-
+  become: true
   roles:
     - simulator
+
+- name: Install UERANSIM
+  hosts: ueransim_nodes
+  become: true
+  tasks:
+    - name: Clone UERANSIM repository
+      git:
+        repo: https://github.com/aligungr/UERANSIM.git
+        dest: /home/ubuntu/UERANSIM
+      tags:
+        - ueransim
+
+    - name: Install dependencies
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      loop:
+        - g++
+        - pkg-config
+        - libsctp-dev
+        - iproute2
+      tags:
+        - ueransim
+    - name: Install cmake
+      snap:
+        name: cmake
+        state: present
+        classic: true
+      tags:
+        - ueransim
+    - name: Build UERANSIM
+      shell: cmake . && make
+      args:
+        chdir: /home/ubuntu/UERANSIM
+      tags:
+        - ueransim
+    - name: copy gnb config file to ueransim host
+      copy:
+        src: "/home/ubuntu/custom-gnb.yaml"
+        dest: UERANSIM/config/custom-gnb.yaml
+      tags:
+        - ueransim
+    - name: copy ue config file to ueransim host
+      copy:
+        src: "/home/ubuntu/custom-ue.yaml"
+        dest: UERANSIM/config/custom-ue.yaml
+      tags:
+        - ueransim
+
+- name: Run UERANSIM
+  hosts: ueransim_nodes
+  become: true
+  tasks:
+    - name: Run gNB
+      shell: nohup ./nr-gnb -c ../config/custom-gnb.yaml > /dev/null 2>&1 &
+      async: 30
+      poll: 0
+      args:
+        chdir: /home/ubuntu/UERANSIM/build
+      register: gnb_output
+      tags:
+        - ueransim
+    - debug:
+        var: gnb_output
+    - name: Run UE
+      shell: nohup ./nr-ue -c ../config/custom-ue.yaml > /dev/null 2>&1 &
+      args:
+        chdir: /home/ubuntu/UERANSIM/build
+      tags:
+        - ueransim
