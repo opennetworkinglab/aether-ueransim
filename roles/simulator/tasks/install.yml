@@ -33,4 +33,6 @@
   tags:
     - install
 
-
+- name: configure static route for upf traffic on ueransim node
+  shell: |
+    ip route add {{ core.upf.ip_prefix }} via {{ core.amf.ip }}

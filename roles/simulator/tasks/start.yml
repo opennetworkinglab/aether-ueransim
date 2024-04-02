@@ -1,19 +1,28 @@
 ---
 
-- name: copy gnb config file to ueransim host
+- name: copy config files to ueransim host
   copy:
-    src: "{{ ROOT_DIR }}/config/custom-gnb.yaml"
-    dest: UERANSIM/config/custom-gnb.yaml
+    src: "{{ ROOT_DIR }}/config/{{ item.1 }}"
+    dest: UERANSIM/config/
+  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+  when: inventory_hostname in groups['ueransim_nodes']
   tags:
     - ueransim
-- name: copy ue config file to ueransim host
-  copy:
-    src: "{{ ROOT_DIR }}/config/custom-ue.yaml"
-    dest: UERANSIM/config/custom-ue.yaml
-  tags:
-    - ueransim
+
+- name: list items 
+  shell: |
+    echo "config/{{ item.1 }}"
+  register: list_output
+  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+  when: "item.0  == 0"
+
+- debug:
+    var: list_output
+
 - name: Run gNB
-  shell: nohup ./nr-gnb -c ../config/custom-gnb.yaml > /dev/null 2>&1 &
+  shell: nohup ./nr-gnb -c "../config/{{ item.1 }}" > /dev/null 2>&1 &
+  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+  when: "item.0  == 0"
   async: 30
   poll: 0
   args:
@@ -21,10 +30,14 @@
   register: gnb_output
   tags:
     - ueransim
+
 - debug:
     var: gnb_output
+
 - name: Run UE
-  shell: nohup ./nr-ue -c ../config/custom-ue.yaml > /dev/null 2>&1 &
+  shell: nohup ./nr-ue -c "../config/{{ item.1 }}" > /dev/null 2>&1 &
+  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+  when: "item.0  == 1"
   args:
     chdir: UERANSIM/build
   tags:
