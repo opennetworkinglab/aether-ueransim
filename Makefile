@@ -16,20 +16,21 @@ ueransim-ansible:
 
 #### a. Debugging ####
 ueransim-pingall:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/pingall.yml 
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/pingall.yml \ 
+	--extra-vars $(EXTRA_VARS) 
 
 #### b. Provision ueransim ####
 ueransim-install:
 	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags install \
-                --extra-vars "ROOT_DIR=$(ROOT_DIR)" -v
+                --extra-vars "ROOT_DIR=$(UERANSIM_ROOT_DIR)"  --extra-vars $(EXTRA_VARS) -v
 
 #### c. Start the simulator
-ueransim-simulator-run:
+ueransim-run:
 	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags start  \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" -v
+		--extra-vars "ROOT_DIR=$(UERANSIM_ROOT_DIR)"  --extra-vars $(EXTRA_VARS)
 
 #### d. Remove ueransim ####
 ueransim-uninstall:
 	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/simulator.yml --tags uninstall  \
-		--extra-vars "ROOT_DIR=$(ROOT_DIR)" -v
+		--extra-vars "ROOT_DIR=$(UERANSIM_ROOT_DIR)"   --extra-vars $(EXTRA_VARS)
 

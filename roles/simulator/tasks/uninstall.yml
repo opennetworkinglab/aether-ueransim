@@ -1,9 +1,14 @@
 ---
 - name: force stop gNB
-  command: pkill -9 -f gnb 
+  command: pkill -9 -f nr-gnb 
 
 - name: force stop UE
-  command: pkill -9 -f ue 
+  command: pkill -9 -f nr-ue 
  
 - name: remove ueransim
-  command: rm -rf {{ROOT_DIR}}/UERANSIM 
+  command: rm -rf {{ROOT_DIR}}/UERANSIM
+
+- name: configure static route for upf traffic on ueransim node
+  shell: |
+    ip route del {{ core.upf.ip_prefix }} via {{ core.amf.ip }}
+
