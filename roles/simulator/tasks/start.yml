@@ -9,7 +9,7 @@
   tags:
     - ueransim
 
-- name: list items 
+- name: list items
   shell: |
     echo "config/{{ item.1 }}"
   register: list_output

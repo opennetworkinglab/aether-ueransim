@@ -4,12 +4,12 @@ k8s:
     config:
       token: purdue-k8s-rke2
       port: 9345
- 
+
   kubectl:
     version: v1.23.15
 
   helm:
-    version: v3.10.3      
+    version: v3.10.3
 
 core:
   standalone: "true"
@@ -28,7 +28,7 @@ core:
 ueransim:
   docker:
     container:
-            image: kunal14kapoor/ueransim:latest      
+            image: kunal14kapoor/ueransim:latest
       prefix: ueransim
       count: 1
     network:

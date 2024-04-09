@@ -16,8 +16,8 @@ ueransim-ansible:
 
 #### a. Debugging ####
 ueransim-pingall:
-	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/pingall.yml \ 
-	--extra-vars $(EXTRA_VARS) 
+	ansible-playbook -i $(HOSTS_INI_FILE) $(UERANSIM_ROOT_DIR)/pingall.yml \
+	--extra-vars $(EXTRA_VARS)
 
 #### b. Provision ueransim ####
 ueransim-install:
