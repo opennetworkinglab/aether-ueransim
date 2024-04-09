@@ -3,7 +3,7 @@
 - name: provision simulator
   hosts: ueransim_nodes
   gather_facts: true
-  become: true  
+  become: true
   vars_files:
     - "vars/main.yml"
 

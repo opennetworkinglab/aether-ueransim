@@ -8,4 +8,4 @@ ueransim:
     iface: "access"
   amf:
     ip: "172.31.3.101"
-    
+
