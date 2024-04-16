@@ -15,6 +15,7 @@
     - pkg-config
     - libsctp-dev
     - iproute2
+    - make
   tags:
     - install
 
