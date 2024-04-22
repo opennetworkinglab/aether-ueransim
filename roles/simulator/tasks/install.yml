@@ -1,4 +1,15 @@
 ---
+- name: remove UERANSIM if already exist
+  file:
+    path: UERANSIM
+    state: absent
+  tags:
+    - install
+  register: remove
+
+- debug:
+    var: remove
+
 - name: Clone UERANSIM repository
   git:
     repo: https://github.com/aligungr/UERANSIM.git
