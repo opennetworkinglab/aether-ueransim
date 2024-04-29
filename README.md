@@ -9,10 +9,8 @@ Global vars file "vars/main-ueransim.yml" gives the overall blueprint specificat
 ## Step-by-Step Installation
 To install ueransim, follow these steps:
 1. Inventory file hosts.ini needs to be modified to identify the server that is to run UERANSIM. Currently, a second server is needed, as UERANSIM and SD-Core cannot be deployed on the same server.
-"
-[ueransim_nodes]
-node2
-"
+"[ueransim_nodes]
+node2"
 2. Install the UERANSIM
    - Update the config files under configs directory for both UE and gNB. 
    - Run "make aether-ueransim-install".
