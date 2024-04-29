@@ -6,7 +6,7 @@
   command: pkill -9 -f nr-ue
 
 - name: remove ueransim
-  command: rm -rf {{ROOT_DIR}}/UERANSIM
+  command: rm -rf {{ROOT_DIR}}/ueransim_onramp
 
 - name: configure static route for upf traffic on ueransim node
   shell: |

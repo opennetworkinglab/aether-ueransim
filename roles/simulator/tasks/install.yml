@@ -1,7 +1,7 @@
 ---
 - name: remove UERANSIM if already exist
   file:
-    path: UERANSIM
+    path: ueransim_onramp
     state: absent
   tags:
     - install
@@ -13,7 +13,7 @@
 - name: Clone UERANSIM repository
   git:
     repo: https://github.com/aligungr/UERANSIM.git
-    dest: UERANSIM
+    dest: ueransim_onramp
   tags:
     - install
 
@@ -41,7 +41,7 @@
 - name: Build UERANSIM
   shell: cmake . && make
   args:
-    chdir: UERANSIM
+    chdir: ueransim_onramp
   tags:
     - install
 
