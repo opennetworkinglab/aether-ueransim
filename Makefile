@@ -3,6 +3,7 @@
 export ROOT_DIR ?= $(PWD)
 export UERANSIM_ROOT_DIR ?= $(ROOT_DIR)
 
+
 export ANSIBLE_NAME ?= ansible-ueransim
 export HOSTS_INI_FILE ?= hosts.ini
 
