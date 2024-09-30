@@ -6,23 +6,13 @@
     - ueransim
 
 - name: copy config files to ueransim host
-  copy:
+  template:
     src: "{{ ROOT_DIR }}/{{ item.1 }}"
     dest: ueransim_onramp/config/
   with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
   when: inventory_hostname in groups['ueransim_nodes']
   tags:
     - ueransim
-
-- name: list items
-  shell: |
-    echo "config/{{ item.1 }}"
-  register: list_output
-  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
-  when: "item.0  == 0"
-
-- debug:
-    var: list_output
 
 - name: Run gNB
   shell: nohup ./nr-gnb -c "../config/{{ item.1 }}" > /dev/null 2>&1 &
@@ -47,4 +37,3 @@
     chdir: ueransim_onramp/build
   tags:
     - ueransim
-

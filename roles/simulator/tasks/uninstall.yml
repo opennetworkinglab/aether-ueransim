@@ -7,17 +7,17 @@
   command: pkill -9 -f nr-ue
   ignore_errors: yes
 
-- name: remove ueransim
-  command: rm -rf {{ROOT_DIR}}/ueransim_onramp
+- name: remove UERANSIM
+  file:
+    path: ueransim_onramp
+    state: absent
   ignore_errors: yes
+  tags:
+    - remove_ueransim
+  
 
 - name: configure static route for upf traffic on ueransim node
   shell: |
     ip route del {{ core.upf.ip_prefix }} via {{ core.amf.ip }}
-  ignore_errors: yes  
-
-- name: remove UERANSIM 
-  file:
-    path: ueransim_onramp
-    state: absent
+  when: (inventory_hostname in groups['ueransim_nodes']) and (inventory_hostname not in groups['master_nodes'])
   ignore_errors: yes
