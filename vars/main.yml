@@ -7,8 +7,8 @@ core:
 ueransim:
   servers:
     0:
-      - "custom-gnb.yaml"
-      - "custom-ue.yaml"
+      - "config/custom-gnb.yaml"
+      - "config/custom-ue.yaml"
   
   # TODO: Dockerize UERANSIM  
   # docker:
