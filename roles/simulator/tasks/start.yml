@@ -1,8 +1,13 @@
 ---
 
+- debug:
+    msg: "{{ ROOT_DIR }}"
+  tags:
+    - ueransim
+
 - name: copy config files to ueransim host
   template:
-    src: "{{ ROOT_DIR }}/config/{{ item.1 }}"
+    src: "{{ ROOT_DIR }}/{{ item.1 }}"
     dest: ueransim_onramp/config/
   with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
   when: inventory_hostname in groups['ueransim_nodes']

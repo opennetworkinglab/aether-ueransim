@@ -1,11 +1,29 @@
-ueransim:
-  servers:
-    0:
-      - "custom-gnb.yaml"
-      - "custom-ue.yaml"
+core:
   upf:
     ip_prefix: "192.168.252.0/24"
-    iface: "access"
   amf:
     ip: "172.31.3.101"
 
+ueransim:
+  servers:
+    0:
+      - "config/custom-gnb.yaml"
+      - "config/custom-ue.yaml"
+  
+  # TODO: Dockerize UERANSIM  
+  # docker:
+  #   container:
+  #     image: kunal14kapoor/ueransim:latest
+  #     prefix: ueransim
+  #     count: 1
+  #   network:
+  #     macvlan:
+  #       name: ueransimnet
+
+      #servers: Enable this for different needed configurations.Please ensure the file existence.
+      #0:
+      #- "deps/ueransim/config/ueransim-s1-p1.yaml"
+      #- "deps/ueransim/config/ueransim-s1-p2.yaml"
+      #1:
+      #- "deps/ueransim/config/ueransim-s1-p2.yaml"
+      #- "deps/ueransim/config/ueransim-s1-p1.yaml"
