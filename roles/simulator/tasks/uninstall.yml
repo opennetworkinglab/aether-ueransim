@@ -1,14 +1,23 @@
 ---
 - name: force stop gNB
   command: pkill -9 -f nr-gnb
+  ignore_errors: yes
 
 - name: force stop UE
   command: pkill -9 -f nr-ue
+  ignore_errors: yes
 
 - name: remove ueransim
   command: rm -rf {{ROOT_DIR}}/ueransim_onramp
+  ignore_errors: yes
 
 - name: configure static route for upf traffic on ueransim node
   shell: |
     ip route del {{ core.upf.ip_prefix }} via {{ core.amf.ip }}
+  ignore_errors: yes  
 
+- name: remove UERANSIM 
+  file:
+    path: ueransim_onramp
+    state: absent
+  ignore_errors: yes
