@@ -19,14 +19,8 @@
 
 - name: Install dependencies
   apt:
-    name: "{{ item }}"
+    name: g++ libsctp-dev iproute2 make
     state: present
-  loop:
-    - g++
-    - pkg-config
-    - libsctp-dev
-    - iproute2
-    - make
   tags:
     - install
 
