@@ -2,22 +2,27 @@
 - name: force stop gNB
   command: pkill -9 -f nr-gnb
   ignore_errors: yes
+  become: true
+  when: inventory_hostname in groups['ueransim_nodes']
 
 - name: force stop UE
   command: pkill -9 -f nr-ue
   ignore_errors: yes
+  become: true
+  when: inventory_hostname in groups['ueransim_nodes']
 
 - name: remove UERANSIM
   file:
     path: ueransim_onramp
     state: absent
   ignore_errors: yes
-  tags:
-    - remove_ueransim
+  become: true  
+  when: inventory_hostname in groups['ueransim_nodes']
   
 
 - name: configure static route for upf traffic on ueransim node
   shell: |
     ip route del {{ core.upf.ip_prefix }} via {{ core.amf.ip }}
   when: (inventory_hostname in groups['ueransim_nodes']) and (inventory_hostname not in groups['master_nodes'])
+  become: true
   ignore_errors: yes
