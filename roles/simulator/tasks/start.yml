@@ -1,39 +1,96 @@
 ---
 
-- debug:
-    msg: "{{ ROOT_DIR }}"
-  tags:
-    - ueransim
-
 - name: copy config files to ueransim host
   template:
     src: "{{ ROOT_DIR }}/{{ item.1 }}"
     dest: ueransim_onramp/config/
   with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
   when: inventory_hostname in groups['ueransim_nodes']
-  tags:
-    - ueransim
 
 - name: Run gNB
-  shell: nohup ./nr-gnb -c "../config/{{ item.1 }}" > /dev/null 2>&1 &
-  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
-  when: "item.0  == 0"
-  async: 30
-  poll: 0
+  shell: nohup ./nr-gnb -c "../config/custom-gnb.yaml" > /dev/null 2>&1 &
+  register: gnb_output
   args:
     chdir: ueransim_onramp/build
-  register: gnb_output
-  tags:
-    - ueransim
+  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+  async: 30
+  poll: 0
+  when: "inventory_hostname in groups['ueransim_nodes'] and item.0  == 0"
 
 - debug:
     var: gnb_output
+  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+  when: "inventory_hostname in groups['ueransim_nodes'] and item.0  == 0"  
+
+- pause:
+    seconds: 5
+
 
 - name: Run UE
-  shell: nohup ./nr-ue -c "../config/{{ item.1 }}" > /dev/null 2>&1 &
+  shell: nohup ./nr-ue -c "../config/custom-ue.yaml" > /dev/null 2>&1 &
   with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
-  when: "item.0  == 1"
   args:
     chdir: ueransim_onramp/build
-  tags:
-    - ueransim
+  become: true
+  when: "inventory_hostname in groups['ueransim_nodes'] and item.0  == 1"
+
+- pause:
+    seconds: 5
+
+- name: Get UE IP address
+  shell: "ip a | grep -A 1 'uesimtun0' | grep inet | awk '{print $2}' | cut -d'/' -f1"
+  register: ue_ip
+  when: "inventory_hostname in groups['ueransim_nodes']"
+
+- set_fact:
+    ue_ip: "{{ ue_ip.stdout }}"
+  when: "inventory_hostname in groups['ueransim_nodes']"
+
+- debug:
+    var: ue_ip
+  when: inventory_hostname in groups['ueransim_nodes']
+
+- name: Run curl command for connectivity
+  shell: "./nr-binder {{ ue_ip }} curl google.com"
+  register: ue_output
+  args:
+    chdir: ueransim_onramp/build
+  when: "inventory_hostname in groups['ueransim_nodes']"
+  
+- debug:
+    var: ue_output.stdout_lines
+  when: "inventory_hostname in groups['ueransim_nodes']"
+
+### TODO: IPERF 
+
+# - name: Get information about the pod
+#   kubernetes.core.k8s_info:
+#     kind: Pod
+#     namespace: omec      
+#     name: iperf-server
+#   when: inventory_hostname in groups['master_nodes'][0]
+#   register: iperf_server_pod_info
+
+# - name: Set fact for Pod IP on master node
+#   set_fact:
+#     iperf_server_pod_ip: "{{ iperf_server_pod_info.resources[0].status.podIP }}"
+#   when: inventory_hostname in groups['master_nodes'][0]
+
+# - name: Print the Pod IP
+#   debug:
+#     msg: "Pod IP: ./nr-binder {{ ue_ip }} iperf -c {{ hostvars[item].iperf_server_pod_ip}}"
+#   with_items: "{{ groups['master_nodes'][0] }}"
+#   when: inventory_hostname in groups['ueransim_nodes']
+
+# - name: Run curl command for connectivity
+#   shell: "./nr-binder {{ ue_ip }} iperf -c {{ iperf_server_pod_ip }}"
+#   when: "inventory_hostname in groups['ueransim_nodes']"
+#   register: ue_output
+#   when: inventory_hostname in groups['ueransim_nodes']
+#   args:
+#     chdir: ueransim_onramp/build
+#   tags:
+#     - ueransim
+  
+# - debug:
+#     var: ue_output.stdout_lines
