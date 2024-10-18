@@ -19,7 +19,6 @@
   become: true  
   when: inventory_hostname in groups['ueransim_nodes']
   
-
 - name: configure static route for upf traffic on ueransim node
   shell: |
     ip route del {{ core.upf.ip_prefix }} via {{ core.amf.ip }}
