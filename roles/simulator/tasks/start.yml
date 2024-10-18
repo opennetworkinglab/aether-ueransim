@@ -1,38 +1,43 @@
 ---
 
-- name: copy config files to ueransim host
+- name: check if servers and config server length are equal
+  fail:
+    msg: "Number of ueransim nodes and servers in config file are not equal"
+  when: ueransim.servers|length != groups['ueransim_nodes']|length
+
+- name: copy gNb config files to ueransim host
   template:
-    src: "{{ ROOT_DIR }}/{{ item.1 }}"
-    dest: ueransim_onramp/config/
-  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
+    src: "{{ ROOT_DIR }}/{{ ueransim.servers[server_index].gnb }}"
+    dest: ueransim_onramp/config/custom-gnb.yaml
+  vars:
+    server_index: "{{ groups['ueransim_nodes'].index(inventory_hostname) }}"  
+  when: inventory_hostname in groups['ueransim_nodes']
+
+- name: copy UE config files to ueransim host
+  template:
+    src: "{{ ROOT_DIR }}/{{ ueransim.servers[server_index].ue }}"
+    dest: ueransim_onramp/config/custom-ue.yaml
+  vars:
+    server_index: "{{ groups['ueransim_nodes'].index(inventory_hostname) }}"  
   when: inventory_hostname in groups['ueransim_nodes']
 
 - name: Run gNB
   shell: nohup ./nr-gnb -c "../config/custom-gnb.yaml" > /dev/null 2>&1 &
-  register: gnb_output
   args:
     chdir: ueransim_onramp/build
-  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
   async: 30
   poll: 0
-  when: "inventory_hostname in groups['ueransim_nodes'] and item.0  == 0"
-
-- debug:
-    var: gnb_output
-  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
-  when: "inventory_hostname in groups['ueransim_nodes'] and item.0  == 0"  
+  when: "inventory_hostname in groups['ueransim_nodes']"
 
 - pause:
     seconds: 5
 
-
 - name: Run UE
   shell: nohup ./nr-ue -c "../config/custom-ue.yaml" > /dev/null 2>&1 &
-  with_indexed_items: "{{ ueransim.servers[lookup('ansible.utils.index_of', groups['ueransim_nodes'], 'eq', inventory_hostname)] }}"
   args:
     chdir: ueransim_onramp/build
+  when: "inventory_hostname in groups['ueransim_nodes']"
   become: true
-  when: "inventory_hostname in groups['ueransim_nodes'] and item.0  == 1"
 
 - pause:
     seconds: 5

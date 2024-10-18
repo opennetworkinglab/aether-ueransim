@@ -5,8 +5,9 @@ ueransim:
         name: ueransimnet
 
   servers:
-    0:
-      - "config/ueransim_default.yaml"
+    "0":
+      gnb: "config/custom-gnb.yaml"
+      ue: "config/custom-ue.yaml"
 core:
   amf:
     ip: "172.16.248.6"
