@@ -21,7 +21,7 @@
   
 - name: configure static route for upf traffic on ueransim node
   shell: |
-    ip route del {{ core.upf.ip_prefix }} via {{ core.amf.ip }}
+    ip route del {{ core.upf.access_subnet }} via {{ core.amf.ip }}
   when: (inventory_hostname in groups['ueransim_nodes']) and (inventory_hostname not in groups['master_nodes'])
   become: true
   ignore_errors: yes

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: iperf-server
-  namespace: omec  
+  namespace: aether-5gc  
   labels:
       app: iperf-server
 spec:
@@ -19,7 +19,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: iperf-service
-  namespace: omec  # Change this if your pod is in a different namespace
+  namespace: aether-5gc  # Change if iperf is to run in a different namespace
 spec:
   selector:
     app: iperf-server  # Ensure this matches the labels of the Pod
