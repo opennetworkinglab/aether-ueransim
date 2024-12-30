@@ -71,7 +71,7 @@
 # - name: Get information about the pod
 #   kubernetes.core.k8s_info:
 #     kind: Pod
-#     namespace: omec      
+#     namespace: aether-5gc      
 #     name: iperf-server
 #   when: inventory_hostname in groups['master_nodes'][0]
 #   register: iperf_server_pod_info
