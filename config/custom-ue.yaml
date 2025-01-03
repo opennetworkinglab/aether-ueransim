@@ -28,7 +28,7 @@ imeiSv: '4370816125816151'
 
 # List of gNB IP addresses for Radio Link Simulation
 gnbSearchList:
-  - {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}
+  - {{ ueransim.gnb.ip }}
 
 # UAC Access Identities Configuration
 uacAic:

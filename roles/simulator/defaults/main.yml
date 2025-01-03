@@ -4,8 +4,11 @@ ueransim:
       macvlan:
         name: ueransimnet
 
+  gnb:
+    ip: "172.20.0.2"
+
   servers:
-    "0":
+    0:
       gnb: "config/custom-gnb.yaml"
       ue: "config/custom-ue.yaml"
 core:
