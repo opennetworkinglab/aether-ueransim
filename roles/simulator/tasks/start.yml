@@ -7,18 +7,18 @@
 
 - name: copy gNb config files to ueransim host
   template:
-    src: "{{ ROOT_DIR }}/{{ ueransim.servers[server_index].gnb }}"
+    src: "{{ ROOT_DIR }}/{{ ueransim.servers[server_index | int].gnb }}"
     dest: ueransim_onramp/config/custom-gnb.yaml
   vars:
-    server_index: "{{ groups['ueransim_nodes'].index(inventory_hostname) }}"  
+    server_index: "{{ groups['ueransim_nodes'].index(inventory_hostname) }}"
   when: inventory_hostname in groups['ueransim_nodes']
 
 - name: copy UE config files to ueransim host
   template:
-    src: "{{ ROOT_DIR }}/{{ ueransim.servers[server_index].ue }}"
+    src: "{{ ROOT_DIR }}/{{ ueransim.servers[server_index | int].ue }}"
     dest: ueransim_onramp/config/custom-ue.yaml
   vars:
-    server_index: "{{ groups['ueransim_nodes'].index(inventory_hostname) }}"  
+    server_index: "{{ groups['ueransim_nodes'].index(inventory_hostname) }}"
   when: inventory_hostname in groups['ueransim_nodes']
 
 - name: Run gNB
@@ -61,17 +61,17 @@
   args:
     chdir: ueransim_onramp/build
   when: "inventory_hostname in groups['ueransim_nodes']"
-  
+
 - debug:
     var: ue_output.stdout_lines
   when: "inventory_hostname in groups['ueransim_nodes']"
 
-### TODO: IPERF 
+### TODO: IPERF
 
 # - name: Get information about the pod
 #   kubernetes.core.k8s_info:
 #     kind: Pod
-#     namespace: aether-5gc      
+#     namespace: aether-5gc
 #     name: iperf-server
 #   when: inventory_hostname in groups['master_nodes'][0]
 #   register: iperf_server_pod_info
@@ -96,6 +96,6 @@
 #     chdir: ueransim_onramp/build
 #   tags:
 #     - ueransim
-  
+
 # - debug:
 #     var: ue_output.stdout_lines
