@@ -55,8 +55,12 @@
     var: ue_ip
   when: inventory_hostname in groups['ueransim_nodes']
 
-- name: Run curl command for connectivity
-  shell: "./nr-binder {{ ue_ip }} curl google.com"
+- set_fact:
+    ping_target: "{{ core.upf.core_subnet | regex_replace('(/.*$)', '') }}"
+  when: "inventory_hostname in groups['ueransim_nodes']"
+
+- name: Run ping command for connectivity
+  shell: "./nr-binder {{ ue_ip }} ping -c 5 {{ ping_target }}"
   register: ue_output
   args:
     chdir: ueransim_onramp/build
@@ -65,37 +69,3 @@
 - debug:
     var: ue_output.stdout_lines
   when: "inventory_hostname in groups['ueransim_nodes']"
-
-### TODO: IPERF
-
-# - name: Get information about the pod
-#   kubernetes.core.k8s_info:
-#     kind: Pod
-#     namespace: aether-5gc
-#     name: iperf-server
-#   when: inventory_hostname in groups['master_nodes'][0]
-#   register: iperf_server_pod_info
-
-# - name: Set fact for Pod IP on master node
-#   set_fact:
-#     iperf_server_pod_ip: "{{ iperf_server_pod_info.resources[0].status.podIP }}"
-#   when: inventory_hostname in groups['master_nodes'][0]
-
-# - name: Print the Pod IP
-#   debug:
-#     msg: "Pod IP: ./nr-binder {{ ue_ip }} iperf -c {{ hostvars[item].iperf_server_pod_ip}}"
-#   with_items: "{{ groups['master_nodes'][0] }}"
-#   when: inventory_hostname in groups['ueransim_nodes']
-
-# - name: Run curl command for connectivity
-#   shell: "./nr-binder {{ ue_ip }} iperf -c {{ iperf_server_pod_ip }}"
-#   when: "inventory_hostname in groups['ueransim_nodes']"
-#   register: ue_output
-#   when: inventory_hostname in groups['ueransim_nodes']
-#   args:
-#     chdir: ueransim_onramp/build
-#   tags:
-#     - ueransim
-
-# - debug:
-#     var: ue_output.stdout_lines
