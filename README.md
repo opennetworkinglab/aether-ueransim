@@ -4,7 +4,7 @@ This blueprint runs UERANSIM in place of gNBsim, providing a second way to direc
 
 The UERANSIM blueprint includes the following:
 
-Global vars file "vars/main-ueransim.yml" gives the overall blueprint specification.
+Global vars file `vars/main-ueransim.yml` gives the overall blueprint specification.
 
 ## Step-by-Step Installation
 To install ueransim, follow these steps:
@@ -14,14 +14,14 @@ To install ueransim, follow these steps:
 node2
 ```
 2. Install the UERANSIM
-   - Update the config files under configs directory for both UE and gNB. 
-   - Run `make aether-ueransim-install`.
+   - Update the config files under `config/` for both UE and gNB.
+   - Run `make ueransim-install`.
 3. Start the simulation
    - Set "amf.ip" to the IP address of the core machine.
-   - Run `make aether-ueransim-run`.
+   - Run `make ueransim-run`.
 
 ### One-Step Installation
-To install ueransim in one go, run `make aether-ueransim-install`.
+To install ueransim in one go, run `make ueransim-install`.
 
 ### Uninstall
-To uninstall ueransim, run `make aether-ueransim-uninstall`.
+To uninstall ueransim, run `make ueransim-uninstall`.
