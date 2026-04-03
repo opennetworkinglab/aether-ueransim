@@ -1,4 +1,5 @@
 ueransim:
+  version: v3.2.7
   docker:
     network:
       macvlan:
