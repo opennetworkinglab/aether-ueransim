@@ -28,16 +28,7 @@
     - libsctp-dev
     - iproute2
     - make
-    # - iperf3
-  when: inventory_hostname in groups['ueransim_nodes']
-  become: true
-
-# TODO: Fix cmake version: CMake 3.17 or higher is required
-- name: Install cmake
-  snap:
-    name: cmake
-    state: present
-    classic: true
+    - cmake
   when: inventory_hostname in groups['ueransim_nodes']
   become: true
 
@@ -48,7 +39,7 @@
   when: inventory_hostname in groups['ueransim_nodes']
 
 - name: Changing perm of "nr-binder", adding "+x"
-  file: 
+  file:
     path: ueransim_onramp/build/nr-binder
     mode: u+x
   when: inventory_hostname in groups['ueransim_nodes']
@@ -62,21 +53,3 @@
     ip route add {{ subnet }} via {{ core.amf.ip }}
   become: true
   when: (inventory_hostname in groups['ueransim_nodes']) and (inventory_hostname not in groups['master_nodes']) and core.upf.multihop_gnb == false
-
-### TODO: IPERF 
-
-# - name: copy iperf server deployment files to aether host
-#   template:
-#     src: "{{ ROOT_DIR }}/deps/ueransim/roles/simulator/templates/iperf-server.yaml"
-#     dest: /tmp/iperf-server.yaml
-#   become: true
-#   when: inventory_hostname in groups['master_nodes']
-
-# - name: Create iperf-server pod in aether-5gc namespace
-#   kubernetes.core.k8s:
-#     kubeconfig: "{{ ansible_user_dir }}/.kube/config"
-#     state: present
-#     src: "/tmp/iperf-server.yaml"
-#     apply: true
-#   register: pod_resul
-#   when: inventory_hostname in groups['master_nodes']
